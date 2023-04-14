@@ -30,7 +30,19 @@ exports.createPost = async (req, res) => {
 
 exports.updatePost = async (req, res) => {
   try {
-    const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (req.userData.role !== "Admin" && post._id.toString() !== req.userData.userId) {
+      return res.status(403).json({ message: "You are not allowed to edit this post" });
+    }
+
+    Object.assign(post, req.body);
+    await post.save();
+
     res.status(200).json(post);
   } catch (err) {
     res.status(500).send(err);
@@ -39,7 +51,17 @@ exports.updatePost = async (req, res) => {
 
 exports.deletePost = async (req, res) => {
   try {
-    await Post.findByIdAndDelete(req.params.id);
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (req.userData.role !== "Admin" && post._id.toString() !== req.userData.userId) {
+      return res.status(403).json({ message: "You are not allowed to delete this post" });
+    }
+
+    await post.remove();
     res.status(204).send();
   } catch (err) {
     res.status(500).send(err);

@@ -20,7 +20,7 @@ exports.author = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     req.userData = decoded;
     const role = req.userData.role;
-    if (role == "author"){
+    if (role == "author" || role == "Admin"){
       next();
     }else{
       return res.status(401).json({
@@ -44,7 +44,7 @@ exports.admin = (req, res, next) => {
       next();
     }else{
       return res.status(401).json({
-        message: 'Invalide Role'
+        message: 'Only "Admin" role'
       });
     }
   } catch (error) {
