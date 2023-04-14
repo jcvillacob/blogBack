@@ -2,10 +2,14 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+// Modules
 const user = require('./modules/user');
 const post = require('./modules/post');
 const category = require('./modules/category');
 const comment = require('./modules/comment');
+
+// Login
+const login = require('./modules/login');
 
 
 // const middleware = require('./middleware');
@@ -31,6 +35,9 @@ app.use('/users', user.userRoutes);
 app.use('/posts', post.postRoutes);
 app.use('/categories', category.categoryRoutes);
 app.use('/comments', comment.commentRoutes);
+
+// Login
+app.use('/login', login.loginRoutes);
 
 // Start the server
 const port = process.env.PORT || 3000;

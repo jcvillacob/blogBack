@@ -2,15 +2,13 @@ const User = require('../models/userModel');
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const { role } = req.query; // Extraer el parámetro 'role' desde la consulta
+    const { role } = req.query;
     let filter = {};
 
-    // Verificar si el rol es válido y agregarlo al filtro
     if (role && (role === 'author' || role === 'commenter')) {
       filter.role = role;
     }
 
-    // Si se proporciona un rol, filtrar los usuarios basado en ese rol
     const users = await User.find(filter);
     res.status(200).json(users);
   } catch (error) {
@@ -21,6 +19,15 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+exports.getSelf = async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.userId);
     res.status(200).json(user);
   } catch (err) {
     res.status(500).send(err);
@@ -40,6 +47,15 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+exports.updateSelf = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.userData.id, req.body, { new: true });
     res.status(200).json(user);
   } catch (err) {
     res.status(500).send(err);
