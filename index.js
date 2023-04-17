@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 // Modules
 const user = require('./modules/user');
@@ -8,11 +9,12 @@ const post = require('./modules/post');
 const category = require('./modules/category');
 const comment = require('./modules/comment');
 
-// Login
+// Login and requests
 const login = require('./modules/login');
+const request = require('./modules/request');
 
 
-// const middleware = require('./middleware');
+const requestMiddleware = require('./midleware/requests');
 const connectDB = require('./config/db');
 const cors = require('cors');
 require('dotenv').config({path : 'variables.env'});
@@ -24,7 +26,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // middleware
-// app.use(middleware);
+app.use(morgan('dev'));
+app.use(requestMiddleware.requestLoggerMiddleware);
 app.use(cors());
 
 // Connect to MongoDB
@@ -38,6 +41,7 @@ app.use('/comments', comment.commentRoutes);
 
 // Login
 app.use('/login', login.loginRoutes);
+app.use('/requests', request.requestRoutes);
 
 // Start the server
 const port = process.env.PORT || 3000;

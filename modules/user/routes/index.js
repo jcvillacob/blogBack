@@ -10,12 +10,10 @@ router.post('/', userController.createUser);
 router.get('/me', auth.auth, userController.getSelf);
 router.put('/me', auth.auth, userController.updateSelf);
 
-// Rutas para que los usuarios de rol "admin" puedan ver y editar a todos los usuarios
+// Rutas para que los usuarios de rol "admin" puedan ver, editar y eliminar a todos los usuarios
 router.get('/', userController.getAllUsers);
 router.get('/:id', auth.admin, userController.getUserById);
 router.put('/:id', auth.admin, userController.updateUser);
-
-// Ruta para que solo los usuarios de rol "author" puedan eliminar usuarios
 router.delete('/:id', auth.admin, userController.deleteUser);
 
 module.exports = router;
