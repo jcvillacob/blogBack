@@ -2,21 +2,31 @@ const Post = require('../models/postModel');
 
 exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find({});
+    const posts = await Post.find({})
+      .populate('author', 'name email role') // Reemplaza 'name email' con los campos que deseas obtener del usuario
+      .populate('category', 'name') // Reemplaza 'name' con los campos que deseas obtener de la categoría
+      .exec();
+
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).send(err);
   }
 };
 
+
 exports.getPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id)
+      .populate('author', 'name email role') // Reemplaza 'name email' con los campos que deseas obtener del usuario
+      .populate('category', 'name') // Reemplaza 'name' con los campos que deseas obtener de la categoría
+      .exec();
+
     res.status(200).json(post);
   } catch (err) {
     res.status(500).send(err);
   }
 };
+
 
 exports.createPost = async (req, res) => {
   try {

@@ -30,6 +30,15 @@ app.use(morgan('dev'));
 app.use(requestMiddleware.requestLoggerMiddleware);
 app.use(cors());
 
+/* const corsOptions = {
+  origin: 'https://jcvillacob-psychic-system-9r7xwj6j57rfxg6v-4200.preview.app.github.dev',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions)); */
+
+
 // Connect to MongoDB
 connectDB();
 
