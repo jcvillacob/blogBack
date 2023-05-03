@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -38,9 +39,35 @@ exports.createUser = async (req, res) => {
   const newUser = new User(req.body);
   try {
     const user = await newUser.save();
+
+    // Crear y firmar el token JWT
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY, { expiresIn: '3h' });
+    console.log(token); // Imprimir el token en la consola
+
     res.status(201).json(user);
   } catch (err) {
     res.status(500).send(err);
+  }
+};
+
+// Ruta para verificar el token y actualizar el campo "verified"
+exports.verifyUser = async (req, res) => {
+  const token = req.query.t;
+
+  try {
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+
+    // Actualizar el campo "verified" del usuario correspondiente
+    const user = await User.findByIdAndUpdate(decoded.userId, { verified: true });
+
+    if (!user) {
+      return res.status(404).send('Usuario no encontrado');
+    }
+
+    res.status(200).send('Usuario verificado correctamente');
+  } catch (err) {
+    res.status(401).send('Token inválido o expirado');
   }
 };
 

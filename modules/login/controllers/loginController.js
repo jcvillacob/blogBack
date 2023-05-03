@@ -8,13 +8,18 @@ exports.login = (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: 'Authentication failed'
+          message: 'Usuario no encontrado'
+        });
+      }
+      if (user.role !== 'Admin' && !user.verified) { // Verificar si el usuario está verificado, a menos que sea un Admin
+        return res.status(401).json({
+          message: 'Usuario no verificado'
         });
       }
       bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            message: 'Authentication failed'
+            message: 'Error de contraseña'
           });
         }
         if (result) {
@@ -27,7 +32,7 @@ exports.login = (req, res, next) => {
             },
             process.env.JWT_KEY,
             {
-              expiresIn: "1h"
+              expiresIn: "8h"
             }
           );
           return res.status(200).json({
@@ -36,7 +41,7 @@ exports.login = (req, res, next) => {
           });
         } else {
           return res.status(401).json({
-            message: 'Authentication failed'
+            message: 'Error de contraseña'
           });
         }
       });
