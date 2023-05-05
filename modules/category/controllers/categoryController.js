@@ -1,5 +1,8 @@
 const Category = require('../models/categoryModel');
 
+
+
+///////////////////////////////////////////////////////////////////
 exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find({});
@@ -9,6 +12,9 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
+
+
+///////////////////////////////////////////////////////////////////
 exports.getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -18,6 +24,9 @@ exports.getCategoryById = async (req, res) => {
   }
 };
 
+
+
+///////////////////////////////////////////////////////////////////
 exports.createCategory = async (req, res) => {
   const newCategory = new Category(req.body);
   try {
@@ -28,6 +37,9 @@ exports.createCategory = async (req, res) => {
   }
 };
 
+
+
+///////////////////////////////////////////////////////////////////
 exports.updateCategory = async (req, res) => {
   try {
     const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -37,6 +49,9 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
+
+
+///////////////////////////////////////////////////////////////////
 exports.deleteCategory = async (req, res) => {
   try {
     await Category.findByIdAndDelete(req.params.id);
