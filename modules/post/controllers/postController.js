@@ -84,7 +84,7 @@ exports.updatePost = async (req, res) => {
     if (req.userData.role !== "Admin" && post.author.toString() !== req.userData.userId) {
       return res.status(403).json({ message: "No tienes permitido editar este Post" });
     }
-
+    req.body.updatedAt = Date.now();
     Object.assign(post, req.body);
     await post.save();
 
