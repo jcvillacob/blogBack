@@ -1,8 +1,10 @@
 // PRUEBA DE GIT
 const express = require('express');
 const app = express();
+require('dotenv').config({path : 'variables.env'});
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const path = require('path');
 
 // Modules
 const user = require('./modules/user');
@@ -18,30 +20,23 @@ const request = require('./modules/request');
 const requestMiddleware = require('./midleware/requests');
 const connectDB = require('./config/db');
 const cors = require('cors');
-require('dotenv').config({path : 'variables.env'});
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }))
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '50mb' }))
 
 // middleware
 app.use(morgan('dev'));
 app.use(requestMiddleware.requestLoggerMiddleware);
 app.use(cors());
 
-/* const corsOptions = {
-  origin: 'https://jcvillacob-psychic-system-9r7xwj6j57rfxg6v-4200.preview.app.github.dev',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions)); */
-
-
 // Connect to MongoDB
 connectDB();
+
+// Configuración para servir archivos estáticos
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Routes
 app.use('/users', user.userRoutes);

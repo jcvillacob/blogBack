@@ -39,7 +39,7 @@ exports.getSelf = async (req, res) => {
   try {
     const role = req.userData.role;
     let posts;
-    if(role === "Admin"){
+    if (role === "Admin") {
       return await exports.getAllPosts(req, res);
     } else {
       // Encontrar los posts que corresponden al autor
@@ -61,12 +61,22 @@ exports.getSelf = async (req, res) => {
 ///////////////////////////////////////////////////////////////////
 exports.createPost = async (req, res) => {
   try {
-    req.body.author = req.userData.userId;
-    const newPost = new Post(req.body);
-    const post = await newPost.save();
-    res.status(201).json(post);
-  } catch (err) {
-    res.status(500).send(err);
+    const { title, content, category, tags, image } = req.body;
+
+    const newPost = new Post({
+      title: title,
+      content: content,
+      category: category,
+      tags: tags,
+      image: image,
+      author: req.userData.userId,
+    });
+
+    const savedPost = await newPost.save();
+    res.status(201).json(savedPost);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 

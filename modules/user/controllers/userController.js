@@ -1,5 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -73,15 +75,26 @@ exports.verifyUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(req.body.password, salt);
+      req.body.password = passwordHash;
+    }
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(user);
   } catch (err) {
     res.status(500).send(err);
+    console.log(err);
   }
 };
 
 exports.updateSelf = async (req, res) => {
   try {
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(req.body.password, salt);
+      req.body.password = passwordHash;
+    }
     const user = await User.findByIdAndUpdate(req.userData.id, req.body, { new: true });
     res.status(200).json(user);
   } catch (err) {
